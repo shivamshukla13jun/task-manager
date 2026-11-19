@@ -1,11 +1,11 @@
 import axios from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { API_URL, ENCRYPTION_ENABLED } from '../lib/config';
+import { ENCRYPTION_ENABLED } from '../lib/config';
 import { decryptResponse, encryptRequest, isEncryptedResponse } from '../lib/crypto';
 import { store } from '../store';
 import { clearCredentials } from '../store/auth.slice';
 
-export const api = axios.create({ baseURL: API_URL });
+export const api = axios.create({ baseURL: "https://task-manager-zpny.onrender.com" });
 
 type EncryptedConfig = InternalAxiosRequestConfig & { _encKey?: CryptoKey };
 
