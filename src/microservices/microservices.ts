@@ -5,7 +5,6 @@
 
 // Import all microservice configs
 import authServiceConfig from 'microservices/auth-service/config.json';
-import userServiceConfig from 'microservices/user-service/config.json';
 // Define the interface for microservice config
 interface MicroserviceConfig {
   baseUrl: string;
@@ -19,7 +18,6 @@ interface MicroserviceConfig {
 export const microservicesConfig: Record<string, MicroserviceConfig> = {
  
   auth: authServiceConfig  as MicroserviceConfig,
-  user: userServiceConfig  as MicroserviceConfig,
 };
 // Default export
 export default microservicesConfig;

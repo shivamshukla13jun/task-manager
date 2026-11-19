@@ -3,8 +3,6 @@ import { z } from 'zod';
 import { AppError } from 'middlewares/error';
 import { verifyToken, verifyTokenInDatabase } from 'libs/jwt';
 import User, { IUserDocument } from 'models/user.model';
-import { upload } from './upload';
-import { withTransaction, cleanupRequestFiles, deleteFileOnCommit } from './transaction';
 import { encryptionMiddleware } from './encryption';
 
 declare global {
@@ -19,12 +17,6 @@ export class Middleware {
     constructor() {
 
     }
-
-    static upload = upload;
-    static withTransaction = withTransaction;
-    static cleanupRequestFiles = cleanupRequestFiles;
-    static deleteFileOnCommit = deleteFileOnCommit;
-
     static verifyToken = async (req: Request, res: Response, next: NextFunction) => {
         try {
             // Extract JWT token from Authorization header
@@ -87,4 +79,4 @@ export class Middleware {
 // tagged so the auto-swagger generator marks these routes as protected
 (Middleware.verifyToken as any)._requiresAuth = true;
 
-export { upload, withTransaction, cleanupRequestFiles, deleteFileOnCommit, encryptionMiddleware };
+export { encryptionMiddleware };

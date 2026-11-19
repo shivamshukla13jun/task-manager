@@ -9,7 +9,6 @@ import {
   isEncryptedRequest,
   unwrapSessionKey,
 } from 'libs/encryption';
-import redisClient from 'libs/redis/redisClient';
 
 /**
  * Decrypts req.body in place.
@@ -74,24 +73,7 @@ export const decryptBodyFields = async (req: Request): Promise<void> => {
     delete (decrypted as any).ts;
   }
 
-  // Replay protection — reject a verbatim resend of the same ek+iv while
-  // its ts window is still valid. Uses Redis SET NX so the check is atomic.
-  // Skipped (fail-open) when Redis isn't connected.
-  if (!req._nonceChecked && redisClient.isOpen) {
-    req._nonceChecked = true;
-    const nonce = crypto
-      .createHash('sha256')
-      .update(`${ek ?? ''}:${body.iv}`)
-      .digest('hex');
-    const key = `enc:nonce:${nonce}`;
-    const set = await redisClient.set(key, '1', {
-      NX: true,
-      EX: Math.ceil(config.ENCRYPTION_MAX_AGE_MS / 1000),
-    });
-    if (set === null) {
-      throw new AppError('Duplicate encrypted request rejected', 400);
-    }
-  }
+
 
   const { ek: _ek, iv: _iv, data: _d, ...plainFields } = body;
   req.body =
