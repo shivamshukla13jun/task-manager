@@ -19,8 +19,8 @@ lerna-debug.log*
 *.env
 
 # encryption keys — never commit the private key
-keys/
-*.pem
+# keys
+# *.pem
 
 # Dependency directories
 
