@@ -1,7 +1,7 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import config from 'config/env';
 import Token from 'models/token.model';
-import { Types } from 'mongoose';
+import { ClientSession, Types } from 'mongoose';
 
 export interface ITokenPayload extends JwtPayload {
   userId: string;
@@ -53,21 +53,23 @@ export const generateRefreshToken = (payload: ITokenPayload): string => {
  * @param token - Token string
  * @param type - Token type (access or refresh)
  * @param expiresIn - Expiration time in seconds
+ * @param session - Optional mongoose session for transactions
  */
 export const saveTokenToDatabase = async (
   userId: Types.ObjectId,
   token: string,
   type: 'access' | 'refresh',
-  expiresIn: number
+  expiresIn: number,
+  session?: ClientSession
 ): Promise<void> => {
   const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
-  await Token.create({
+  await Token.create([{
     userId,
     token,
     type,
     expiresAt,
-  });
+  }], { session });
 };
 
 /**
@@ -116,9 +118,10 @@ export const verifyTokenInDatabase = async (
 /**
  * Revoke token by removing from database
  * @param token - Token to revoke
+ * @param session - Optional mongoose session for transactions
  */
-export const revokeToken = async (token: string): Promise<void> => {
-  await Token.deleteOne({ token });
+export const revokeToken = async (token: string, session?: ClientSession): Promise<void> => {
+  await Token.deleteOne({ token }, { session });
 };
 
 /**
