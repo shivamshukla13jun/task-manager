@@ -17,14 +17,15 @@ const selfHost = hostOf(config.BASE_URL as string);
 
 // CORS configuration
 const corsOptions = {
-  origin: (origin: string, callback: Function) => {
-    const isSelf = selfHost !== null && hostOf(origin) === selfHost;
-    if (!origin || isSelf || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true); // Allow the request
-    } else {
-      callback(new Error('Not allowed by CORS')); // Block the request
-    }
-  },
+  // origin: (origin: string, callback: Function) => {
+  //   const isSelf = selfHost !== null && hostOf(origin) === selfHost;
+  //   if (!origin || isSelf || allowedOrigins.indexOf(origin) !== -1) {
+  //     callback(null, true); // Allow the request
+  //   } else {
+  //     callback(new Error('Not allowed by CORS')); // Block the request
+  //   }
+  // },
+  origin: true,
   credentials: config.CORS_CREDENTIALS, // Allow credentials (cookies, authorization headers, etc.)
 
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Allowed methods
