@@ -47,5 +47,6 @@ build/
 
 
 # env files (all environments)
-.env.*
+.env.production
+.env.staging
 !.env.example
