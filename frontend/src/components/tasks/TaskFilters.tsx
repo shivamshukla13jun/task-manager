@@ -1,5 +1,3 @@
-import { useAppDispatch, useAppSelector } from '../../store';
-import { resetFilters, setPriority, setStatus } from '../../store/filters.slice';
 import { TASK_PRIORITIES, TASK_STATUSES } from '../../types';
 import type { TaskPriority, TaskStatus } from '../../types';
 import { Select } from '../ui/Select';
@@ -10,29 +8,38 @@ const withAll = (values: readonly string[], allLabel: string) => [
   ...values.map((v) => ({ value: v, label: v })),
 ];
 
-export const TaskFilters = () => {
-  const dispatch = useAppDispatch();
-  const { status, priority } = useAppSelector((s) => s.filters);
+interface TaskFiltersProps {
+  status: '' | TaskStatus;
+  priority: '' | TaskPriority;
+  onStatusChange: (status: '' | TaskStatus) => void;
+  onPriorityChange: (priority: '' | TaskPriority) => void;
+  onReset: () => void;
+}
 
-  return (
-    <div className="task-filters">
-      <Select
-        aria-label="Filter by status"
-        options={withAll(TASK_STATUSES, 'All statuses')}
-        value={status}
-        onChange={(e) => dispatch(setStatus(e.target.value as '' | TaskStatus))}
-      />
-      <Select
-        aria-label="Filter by priority"
-        options={withAll(TASK_PRIORITIES, 'All priorities')}
-        value={priority}
-        onChange={(e) => dispatch(setPriority(e.target.value as '' | TaskPriority))}
-      />
-      {(status || priority) && (
-        <Button variant="ghost" onClick={() => dispatch(resetFilters())}>
-          Clear
-        </Button>
-      )}
-    </div>
-  );
-};
+export const TaskFilters = ({
+  status,
+  priority,
+  onStatusChange,
+  onPriorityChange,
+  onReset,
+}: TaskFiltersProps) => (
+  <div className="task-filters">
+    <Select
+      aria-label="Filter by status"
+      options={withAll(TASK_STATUSES, 'All statuses')}
+      value={status}
+      onChange={(e) => onStatusChange(e.target.value as '' | TaskStatus)}
+    />
+    <Select
+      aria-label="Filter by priority"
+      options={withAll(TASK_PRIORITIES, 'All priorities')}
+      value={priority}
+      onChange={(e) => onPriorityChange(e.target.value as '' | TaskPriority)}
+    />
+    {(status || priority) && (
+      <Button variant="ghost" onClick={onReset}>
+        Clear
+      </Button>
+    )}
+  </div>
+);

@@ -35,7 +35,7 @@ A full-stack task management app: users register/login and create, list, filter,
         ├── lib/                # config, crypto (WebCrypto hybrid encryption client)
         ├── pages/              # LoginPage, RegisterPage, TasksPage
         ├── schemas/            # zod form schemas
-        ├── store/              # Redux: auth.slice (persisted), filters.slice
+        ├── store/              # Redux: auth.slice (persisted session)
         └── types/              # Shared Task/User/API types
 ```
 

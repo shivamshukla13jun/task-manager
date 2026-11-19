@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { setPage } from '../store/filters.slice';
 import { useCreateTask, useDeleteTask, useTasks, useUpdateTask } from '../hooks/tasks';
 import { errorMessage } from '../api/client';
-import type { Task, TaskStatus } from '../types';
+import type { Task, TaskPriority, TaskStatus } from '../types';
 import type { TaskFormValues } from '../schemas/task.schema';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
@@ -19,12 +17,14 @@ const PAGE_SIZE = 9;
 type EditorState = { mode: 'create' } | { mode: 'edit'; task: Task } | null;
 
 export const TasksPage = () => {
-  const dispatch = useAppDispatch();
-  const filters = useAppSelector((s) => s.filters);
+  const [status, setStatus] = useState<'' | TaskStatus>('');
+  const [priority, setPriority] = useState<'' | TaskPriority>('');
+  const [page, setPage] = useState(1);
+
   const query = {
-    status: filters.status || undefined,
-    priority: filters.priority || undefined,
-    page: filters.page,
+    status: status || undefined,
+    priority: priority || undefined,
+    page,
     limit: PAGE_SIZE,
   };
 
@@ -65,7 +65,23 @@ export const TasksPage = () => {
         <Button onClick={() => setEditor({ mode: 'create' })}>+ New Task</Button>
       </div>
 
-      <TaskFilters />
+      <TaskFilters
+        status={status}
+        priority={priority}
+        onStatusChange={(s) => {
+          setStatus(s);
+          setPage(1);
+        }}
+        onPriorityChange={(p) => {
+          setPriority(p);
+          setPage(1);
+        }}
+        onReset={() => {
+          setStatus('');
+          setPriority('');
+          setPage(1);
+        }}
+      />
 
       <Alert message={isError ? errorMessage(error) : null} />
 
@@ -97,7 +113,7 @@ export const TasksPage = () => {
               <Button
                 variant="secondary"
                 disabled={pagination.page <= 1}
-                onClick={() => dispatch(setPage(pagination.page - 1))}
+                onClick={() => setPage(pagination.page - 1)}
               >
                 Previous
               </Button>
@@ -107,7 +123,7 @@ export const TasksPage = () => {
               <Button
                 variant="secondary"
                 disabled={pagination.page >= pagination.totalPages}
-                onClick={() => dispatch(setPage(pagination.page + 1))}
+                onClick={() => setPage(pagination.page + 1)}
               >
                 Next
               </Button>
