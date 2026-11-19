@@ -10,7 +10,7 @@
     "buildall": "npm run build && npm run build:frontend",
     "copy:assets": "cpx \"src/**/*.ejs\" dist/",
     "copy:configs": "cpx \"src/microservices/**/config.json\" dist/microservices",
-    "start": "cross-env NODE_ENV=production npm run buildall && cross-env NODE_ENV=production pm2 start dist/server.js",
+    "start": "cross-env NODE_ENV=production npm run buildall && cross-env NODE_ENV=production node dist/server.js",
     "start:dev": "cross-env NODE_ENV=development npm run build && cross-env NODE_ENV=development node dist/server.js",
     "start:staging": "cross-env NODE_ENV=staging npm run build && cross-env NODE_ENV=staging node dist/server.js",
     "stop": "pm2 stop dist/server.js",
