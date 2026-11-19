@@ -102,8 +102,19 @@ Frontend — `frontend/.env`:
 | `VITE_API_URL` | Backend base URL (default `http://localhost:3000`) |
 | `VITE_ENCRYPTION_ENABLED` | `false` disables client-side payload encryption |
 
+## Production
+
+The backend serves `frontend/dist` when it exists — build everything and run one process:
+
+```bash
+npm run build:all     # backend tsc build + frontend install & vite build
+node dist/server.js   # serves the React app + API on the same port
+```
+
+For Render (or similar): build command `npm run build:all`, start command `node dist/server.js`.
+
 ## Scripts
 
-Backend: `npm run dev` (nodemon + ts-node), `npm run build` (tsc + tsc-alias), `npx tsc --noEmit` (typecheck), `npm run seed`.
+Backend: `npm run dev` (nodemon + ts-node), `npm run build` (tsc + tsc-alias), `npm run build:frontend` (install + build the React app), `npm run build:all` (both), `npx tsc --noEmit` (typecheck), `npm run seed`.
 
 Frontend: `npm run dev`, `npm run build`, `npm run lint` (oxlint).

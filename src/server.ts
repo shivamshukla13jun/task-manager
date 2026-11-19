@@ -1,4 +1,6 @@
 import express, { Express, } from "express";
+import path from "path";
+import fs from "fs";
 import rootRouter from "routes";
 import { notFound, errorHandler } from "middlewares/error";
 import connectDB from "config/database";
@@ -21,6 +23,19 @@ const attemptDatabaseConnection = async (): Promise<void> => {
 
     // Auto-generated Swagger docs at /api-docs
     setupSwagger(app, rootRouter);
+
+    // Serve the React frontend build (SPA) — after API routes so
+    // /api/* still returns JSON errors. Non-API GETs fall back to
+    // index.html so client-side routes like /login work on refresh.
+    const frontendDist = path.resolve(process.cwd(), 'frontend', 'dist');
+    const indexHtml = path.join(frontendDist, 'index.html');
+    if (fs.existsSync(indexHtml)) {
+      app.use(express.static(frontendDist));
+      app.get('*', (req, res, next) => {
+        if (req.path.startsWith('/api')) return next();
+        res.sendFile(indexHtml);
+      });
+    }
 
     // 404 + global error handler — must be registered after all routes
     app.use(notFound);
