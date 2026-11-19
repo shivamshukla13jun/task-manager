@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Task Manager Microservices API with Redis and RabbitMQ",
   "main": "src/server.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "nodemon ",
     "build": "tsc && tsc-alias && npm run copy:assets && npm run copy:configs",
